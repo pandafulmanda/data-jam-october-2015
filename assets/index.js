@@ -2,40 +2,38 @@ var MARKET = 'DAYSONMARKET';
 var CLOSING = 'DAYSTOCLOSING';
 
 (function(){
-  var canvasElement = document.getElementById("myChart");
-  var breakdownElement = document.getElementById("breakdown");
-  var ctx = canvasElement.getContext("2d");
-  var breakdownCtx = breakdownElement.getContext("2d");
+  var mainChartElement = document.getElementById("main");
+  var mainChartHeading = document.querySelector("[data-chart=main]");
+  var breakdownChartElement = document.getElementById("breakdown");
+  var ctx = mainChartElement.getContext("2d");
+  var breakdownCtx = breakdownChartElement.getContext("2d");
 
   $.getJSON('./data-as-json/sales.json', function( data ) {
 
-    var daysOnMarketBySub = _(data).groupBy(function(house){
-        return house.LEGALSUBDIVISION;
-      })
-      .mapValues(function(sub){
-        var daysOnMarket = _.pluck(sub, MARKET);
-        return daysOnMarket;
-      })
-      .value();
-
-    var daysToClosingBySub = _(data).groupBy(function(house){
-        return house.LEGALSUBDIVISION;
-      })
-      .mapValues(function(sub){
-        var daysOnMarket = _.pluck(sub, CLOSING);
-        return daysOnMarket;
-      })
-      .value();
-
+    var daysOnMarketBySub = groupDaysBySubdivision(data, MARKET);
+    var daysToClosingBySub = groupDaysBySubdivision(data, CLOSING);
     var myBarChart = plotMain();
 
-    canvasElement.onclick = function(evt){
+    mainChartElement.onclick = function(evt){
       var activeBars = myBarChart.getBarsAtEvent(evt);
       var breakdownChart = plotBreakdown(_.first(activeBars).label);
     };
 
-    function plotMain(){
+    mainChartHeading.classList.remove('loading');
 
+
+    function groupDaysBySubdivision(data, factor){
+      return _(data).groupBy(function(house){
+        return house.LEGALSUBDIVISION;
+      })
+      .mapValues(function(sub){
+        var daysToClosing = _.pluck(sub, factor);
+        return daysToClosing;
+      })
+      .value();
+    }
+
+    function plotMain(){
       var averageDaysOnMarketBySub = _.mapValues(daysOnMarketBySub, function(sub){
           return _.sum(sub)/sub.length;
         });

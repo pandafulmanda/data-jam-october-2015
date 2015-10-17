@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>Quick Data Vis</title>
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="./assets/styles.css">
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
   <script type="text/javascript" src="./assets/lodash.js"></script>
 </head>
 <body>
-  <canvas id="myChart" width="16000" height="760"></canvas>
-  <canvas id="breakdown" width="800" height="400"></canvas>
+  <h1 class="loading" data-chart="main">Days on Market and days to close by subdivision</h1>
+  <section class="chart-wrapper">
+    <canvas id="main" width="16000" height="600"></canvas>
+  </section>
+  <section class="chart-wrapper">
+    <canvas id="breakdown" width="800" height="400"></canvas>
+  </section>
   <script type="text/javascript" src="./assets/index.js"></script>
 </body>
 </html>
