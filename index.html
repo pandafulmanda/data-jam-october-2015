@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Quick Data Vis</title>
-  <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900" rel="stylesheet" type="text/css">
   <link rel="stylesheet" type="text/css" href="./assets/styles.css">
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
@@ -11,12 +11,16 @@
 </head>
 <body>
   <h1 class="loading" data-chart="main"><strong class="market">Days on Market</strong> and <strong class="closing">Days to Closing</strong> by subdivision</h1>
-  <section class="chart-wrapper">
-    <canvas id="main" width="16000" height="600"></canvas>
+  <section class="chart-wrapper" data-x-axis="Subdivision" data-y-axis="Days">
+    <div>
+      <canvas id="main" width="16000" height="500"></canvas>
+    </div>
   </section>
-  <h1 data-chart='breakdown' data-sub='Within'>Subdivision</h1>
-  <section class="chart-wrapper">
-    <canvas id="breakdown" width="1200" height="400"></canvas>
+  <h1 data-chart="breakdown" data-sub="">Frequency by Days</h1>
+  <section class="chart-wrapper" data-x-axis="Days, binned" data-y-axis="Frequency">
+    <div>
+      <canvas id="breakdown" width="1200" height="400"></canvas>
+    </div>
   </section>
   <script type="text/javascript" src="./assets/index.js"></script>
 </body>

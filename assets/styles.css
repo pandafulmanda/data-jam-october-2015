@@ -8,6 +8,7 @@ body, html {
 h1 {
   text-align: center;
   font-weight: 400;
+  margin: 0;
 }
 
 canvas {
@@ -24,14 +25,48 @@ canvas {
 
 [data-chart=breakdown]::before {
   content: attr(data-sub) ' ';
+  font-weight: 600;
 }
 
 .chart-wrapper {
   display: block;
-  width: 90%;
+  width: 95%;
+  box-sizing: border-box;
+  padding: 0 40px;
   height: auto;
+  margin: 0 auto 2em auto;
+  position: relative;
+}
+
+.chart-wrapper div {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  position: relative;
   overflow: auto;
-  margin: auto;
+}
+
+.chart-wrapper::before, .chart-wrapper::after {
+  display: block;
+  color: #ccc;
+  text-align: center;
+}
+
+.chart-wrapper::after {
+  content: attr(data-x-axis);
+}
+
+.chart-wrapper::before {
+  position: absolute;
+  width: 100px;
+  left: -2em;
+  top: 30%;
+  content: attr(data-y-axis);
+  -ms-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .loading::after {
