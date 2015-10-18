@@ -5,6 +5,12 @@
   var MAIN_ID = 'main';
   var BREAKDOWN_ID = 'breakdown';
 
+  var DATA_GREEN = [51, 160, 44];
+  var DATA_BLUE = [31, 120, 180];
+
+  var DATASET_LABELS = ['Days on Market', 'Days to Closing'];
+  var DATA_COLORS = [DATA_GREEN, DATA_BLUE];
+
   var main = getChart(MAIN_ID);
   var breakdown = getChart(BREAKDOWN_ID);
 
@@ -88,6 +94,18 @@
     return binBy(allDays, BIN_SIZE);
   }
 
+  function binArray(days, dayBins){
+    var dayLabels = _.pluck(dayBins, 'label');
+    var destination = _.zipObject(dayLabels, _.fill(new Array(dayLabels.length), 0));
+
+    var days = _.sortBy(days, function(day){
+      return day * 1;
+    });
+
+    _.each(days, _.partial(binTo, _, destination, BIN_SIZE));
+    return destination;
+  }
+
   function binTo(day, destination, binSize){
     var rangeIndex = Math.floor(day / binSize);
     var label = (rangeIndex)* binSize + ' - ' + (rangeIndex + 1) * binSize;
@@ -130,14 +148,14 @@
   function setDataOnPlotter(plotter){
     var data = _.rest(arguments);
     var curriedPlotter = _.curry(plotter);
-    return curriedPlotter.apply(curriedPlotter, data);
+    return _.spread(curriedPlotter)(data);
   }
 
   function plotterOverview(daysOnMarketBySub, daysToClosingBySub, plotObject, onBreakdownChange){
     var averageDaysOnMarketBySub = mapAverage(daysOnMarketBySub);
     var averageDaysToClosingBySub = mapAverage(daysToClosingBySub);
 
-    var chart = drawBarChart(plotObject.context, averageDaysOnMarketBySub, averageDaysToClosingBySub);
+    var chart = drawDayPlots(plotObject.context, averageDaysOnMarketBySub, averageDaysToClosingBySub);
 
     plotObject.heading.classList.remove('loading');
     plotObject.element.onclick = function(evt){
@@ -149,31 +167,18 @@
       breakdown.chart = onBreakdownChange(breakdown, _.first(activeBars).label);
     };
 
-
     return chart;
   }
 
   function plotterBreakdown(daysOnMarketBySub, daysToClosingBySub, dayBins, plotObject, subdivision){
-    var marketDaysInBins = binArray(daysOnMarketBySub[subdivision]);
-    var closingDaysInBins = binArray(daysToClosingBySub[subdivision]);
+    var marketDaysInBins = binArray(daysOnMarketBySub[subdivision], dayBins);
+    var closingDaysInBins = binArray(daysToClosingBySub[subdivision], dayBins);
     plotObject.heading.dataset.sub = subdivision;
 
     if(_.isUndefined(plotObject.chart)){
-      return drawBarChart(plotObject.context, marketDaysInBins, closingDaysInBins);
+      return drawDayPlots(plotObject.context, marketDaysInBins, closingDaysInBins);
     } else {
       return updateBarChart(plotObject.chart, marketDaysInBins, closingDaysInBins);
-    }
-
-    function binArray(days){
-      var dayLabels = _.pluck(dayBins, 'label');
-      var destination = _.zipObject(dayLabels, _.fill(new Array(dayLabels.length), 0));
-
-      var days = _.sortBy(days, function(day){
-        return day * 1;
-      });
-
-      _.each(days, _.partial(binTo, _, destination, BIN_SIZE));
-      return destination;
     }
   }
 
@@ -191,32 +196,50 @@
     return barChart;
   }
 
-  function drawBarChart(chartContext, marketDaysObject, closingDaysObject){
+  function drawDayPlots(){
+    var args = _.toArray(arguments)
+    args = _.union([DATASET_LABELS, DATA_COLORS], args);
+    return _.spread(drawBarChart)(args);
+  }
 
-    var labels = _.keys(marketDaysObject);
-    var marketDays = _.values(marketDaysObject);
-    var closingDays = _.values(closingDaysObject);
+  function drawBarChart(datasetLabels, dataColors, chartContext){
+    var daysObjects = _.slice(arguments, 3);
+    var labels = _.keys(daysObjects[0]);
+
+    var datasets = _.map(daysObjects, _.partial(getDatasetOptions, datasetLabels, dataColors));
 
     var shapedData = {
       labels: labels,
-      datasets: [{
-        label: 'Days on Market',
-        fillColor: 'rgba(51,160,44,0.5)',
-        strokeColor: 'rgba(51,160,44,0.8)',
-        highlightFill: 'rgba(51,160,44,0.75)',
-        highlightStroke: 'rgba(51,160,44,1)',
-        data: marketDays
-      }, {
-        label: 'Days to Closing',
-        fillColor: 'rgba(31,120,180,0.5)',
-        strokeColor: 'rgba(31,120,180,0.8)',
-        highlightFill: 'rgba(31,120,180,0.75)',
-        highlightStroke: 'rgba(31,120,180,1)',
-        data: closingDays
-      }]
+      datasets: datasets
     };
 
     return new Chart(chartContext).Bar(shapedData);
+  }
+
+  function getDatasetOptions(datasetLabels, dataColors, dataObject, index){
+    var data = _.values(dataObject);
+    var indexer = index % datasetLabels.length;
+
+    var rgb = dataColors[indexer];
+    var colorOptions = _.spread(getColorOptions)(rgb);
+
+    var dataset = _.extend({}, {
+      label: datasetLabels[indexer],
+      data: data
+    }, colorOptions);
+
+    return dataset;
+  }
+
+  function getColorOptions(r, g, b){
+    var rgbString = [r, g, b].join(', ');
+
+    return {
+      fillColor: 'rgba(' + rgbString + ', 0.5)',
+      strokeColor: 'rgba(' + rgbString + ', 0.8)',
+      highlightFill: 'rgba(' + rgbString + ', 0.75)',
+      highlightStroke: 'rgba(' + rgbString + ', 1)'
+    };
   }
 
   function getChart(chartId){
