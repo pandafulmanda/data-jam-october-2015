@@ -1,3 +1,21 @@
+# About
+
+October [data jam](http://www.meetup.com/Houston-Data-Visualization-Meetup/events/226018977/) with Houston housing data
+
+# Technologies used
+  * Mostly JavaScript
+  * [csvtojson](https://www.npmjs.com/package/csvtojson)
+    * CSV to JSON from commandline
+  * [lodash](https://lodash.com/docs)
+    * Data shaping, utility, etc.
+  * [ChartJS](http://www.chartjs.org/docs/#bar-chart)
+    * For plotting
+    * Quick to get up and running
+  * [jQuery](http://api.jquery.com/jquery.getjson/)
+    * To GET static JSON
+  * [underscore.string](http://epeli.github.io/underscore.string/)
+    * Only to transfrom ALL CAPS subdivision labels to be Titlized
+
 # Data set features
 
 ### Amortized Years
