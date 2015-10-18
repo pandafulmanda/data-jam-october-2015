@@ -1,10 +1,10 @@
-var MARKET = 'DAYSONMARKET';
-var CLOSING = 'DAYSTOCLOSING';
-var BIN_SIZE = 50;
-var MAIN_ID = 'main';
-var BREAKDOWN_ID = 'breakdown';
-
 (function(){
+  var MARKET = 'DAYSONMARKET';
+  var CLOSING = 'DAYSTOCLOSING';
+  var BIN_SIZE = 50;
+  var MAIN_ID = 'main';
+  var BREAKDOWN_ID = 'breakdown';
+
   var main = getChart(MAIN_ID);
   var breakdown = getChart(BREAKDOWN_ID);
 
@@ -19,6 +19,7 @@ var BREAKDOWN_ID = 'breakdown';
       var processedData = processData(data);
       cacheData(processedData);
       plotProcessedData(processedData, main);
+
     });
 
   }
@@ -230,4 +231,4 @@ var BREAKDOWN_ID = 'breakdown';
     };
   }
 
-})();
+}());
