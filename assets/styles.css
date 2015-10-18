@@ -7,10 +7,23 @@ body, html {
 
 h1 {
   text-align: center;
+  font-weight: 400;
 }
 
 canvas {
   margin: auto;
+}
+
+.market {
+  color: rgba(51,160,44, 1);
+}
+
+.closing {
+  color: rgba(31,120,180, 1);
+}
+
+[data-chart=breakdown]::before {
+  content: attr(data-sub) ' ';
 }
 
 .chart-wrapper {

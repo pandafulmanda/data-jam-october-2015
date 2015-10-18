@@ -6,15 +6,17 @@
   <link rel="stylesheet" type="text/css" href="./assets/styles.css">
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+  <script type="text/javascript" src="http://epeli.github.io/underscore.string/dist/underscore.string/dist/underscore.string.min.js"></script>
   <script type="text/javascript" src="./assets/lodash.js"></script>
 </head>
 <body>
-  <h1 class="loading" data-chart="main">Days on Market and days to close by subdivision</h1>
+  <h1 class="loading" data-chart="main"><strong class="market">Days on Market</strong> and <strong class="closing">Days to Closing</strong> by subdivision</h1>
   <section class="chart-wrapper">
     <canvas id="main" width="16000" height="600"></canvas>
   </section>
+  <h1 data-chart='breakdown' data-sub='Within'>Subdivision</h1>
   <section class="chart-wrapper">
-    <canvas id="breakdown" width="800" height="400"></canvas>
+    <canvas id="breakdown" width="1200" height="400"></canvas>
   </section>
   <script type="text/javascript" src="./assets/index.js"></script>
 </body>
