@@ -8,32 +8,23 @@ var BREAKDOWN_ID = 'breakdown';
   var main = getChart(MAIN_ID);
   var breakdown = getChart(BREAKDOWN_ID);
 
-  if(isDataCached()){
+  if( isDataCached() ){
+
     plotProcessedData(getDataFromCache(), main);
+
   } else {
+
     $.getJSON('./data-as-json/sales.json', function( data ) {
+
       var processedData = processData(data);
       cacheData(processedData);
       plotProcessedData(processedData, main);
     });
+
   }
 
-  function isDataCached(){
-    return !_.isUndefined(sessionStorage.housesSubData)
-  }
 
-  function getDataFromCache(){
-    if(!_.isUndefined(sessionStorage.housesSubData)){
-      return JSON.parse(sessionStorage.housesSubData);
-    }
-  }
-
-  function cacheData(data){
-    if('sessionStorage' in window){
-      sessionStorage.housesSubData = JSON.stringify(data);
-    }
-  }
-
+  // procssing and plotting functions
   function processData(data){
     // Groups days by subdivisions
     var daysOnMarketBySub = groupDaysBySubdivision(data, MARKET);
@@ -55,6 +46,28 @@ var BREAKDOWN_ID = 'breakdown';
 
     // Plot overview chart
     plotObject.chart = plotOverview(plotObject, plotBreakdown);
+  }
+
+
+  // caching related functions
+  function canCache(){
+    return 'localStorage' in window;
+  }
+
+  function isDataCached(){
+    return canCache() && !_.isUndefined(localStorage.housesSubData)
+  }
+
+  function getDataFromCache(){
+    if(isDataCached()){
+      return JSON.parse(localStorage.housesSubData);
+    }
+  }
+
+  function cacheData(data){
+    if(canCache()){
+      localStorage.housesSubData = JSON.stringify(data);
+    }
   }
 
   // Data related functions
@@ -129,7 +142,7 @@ var BREAKDOWN_ID = 'breakdown';
     plotObject.element.onclick = function(evt){
       var activeBars = plotObject.chart.getBarsAtEvent(evt);
 
-      if(_.isUndefined(_.first(activeBars).label)){
+      if(_.isUndefined(_.first(activeBars))){
         return;
       }
       breakdown.chart = onBreakdownChange(breakdown, _.first(activeBars).label);
