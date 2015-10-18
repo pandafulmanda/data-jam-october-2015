@@ -17,6 +17,9 @@ October [data jam](http://www.meetup.com/Houston-Data-Visualization-Meetup/event
     * Only to transfrom ALL CAPS subdivision labels to be Titlized
   * [Color Brewer](http://colorbrewer2.org/?type=qualitative&scheme=Paired&n=4)
 
+# Demo
+![Browsing by Subdivision](http://pandafulmanda.github.io/data-jam-october-2015/assets/browsing-by-subs.gif)
+
 # Data set features
 
 ### Amortized Years
