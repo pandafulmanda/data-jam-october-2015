@@ -49,7 +49,7 @@ canvas {
 
 .chart-wrapper::before, .chart-wrapper::after {
   display: block;
-  color: #ccc;
+  color: #CCCCCC;
   text-align: center;
 }
 
@@ -59,8 +59,8 @@ canvas {
 
 .chart-wrapper::before {
   position: absolute;
-  width: 100px;
-  left: -2em;
+  width: 140px;
+  left: -50px;
   top: 30%;
   content: attr(data-y-axis);
   -ms-transform: rotate(-90deg);
