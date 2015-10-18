@@ -8,22 +8,54 @@ var BREAKDOWN_ID = 'breakdown';
   var main = getChart(MAIN_ID);
   var breakdown = getChart(BREAKDOWN_ID);
 
-  $.getJSON('./data-as-json/sales.json', function( data ) {
+  if(isDataCached()){
+    plotProcessedData(getDataFromCache(), main);
+  } else {
+    $.getJSON('./data-as-json/sales.json', function( data ) {
+      var processedData = processData(data);
+      cacheData(processedData);
+      plotProcessedData(processedData, main);
+    });
+  }
 
+  function isDataCached(){
+    return !_.isUndefined(sessionStorage.housesSubData)
+  }
+
+  function getDataFromCache(){
+    if(!_.isUndefined(sessionStorage.housesSubData)){
+      return JSON.parse(sessionStorage.housesSubData);
+    }
+  }
+
+  function cacheData(data){
+    if('sessionStorage' in window){
+      sessionStorage.housesSubData = JSON.stringify(data);
+    }
+  }
+
+  function processData(data){
     // Groups days by subdivisions
     var daysOnMarketBySub = groupDaysBySubdivision(data, MARKET);
     var daysToClosingBySub = groupDaysBySubdivision(data, CLOSING);
 
     var dayBins = binAllDaysBySize(data, BIN_SIZE);
 
+    return {
+      market: daysOnMarketBySub,
+      closing: daysToClosingBySub,
+      dayBins: dayBins
+    };
+  }
+
+  function plotProcessedData(processedData, plotObject){
     // Pass in needed data to plot functions
-    var plotOverview = setDataOnPlotter(plotterOverview, daysOnMarketBySub, daysToClosingBySub);
-    var plotBreakdown = setDataOnPlotter(plotterBreakdown, daysOnMarketBySub, daysToClosingBySub, dayBins);
+    var plotOverview = setDataOnPlotter(plotterOverview, processedData.market, processedData.closing);
+    var plotBreakdown = setDataOnPlotter(plotterBreakdown, processedData.market, processedData.closing, processedData.dayBins);
 
     // Plot overview chart
-    main.chart = plotOverview(main, plotBreakdown);
-
-  });
+    plotObject.chart = plotOverview(plotObject, plotBreakdown);
+  }
 
   // Data related functions
   function groupDaysBySubdivision(data, factor){
